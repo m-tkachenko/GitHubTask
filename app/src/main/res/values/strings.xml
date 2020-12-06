@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GitHubTask</string>
+    <string name="textview_search">Search</string>
+    <string name="textview_repositories">Repositories</string>
+    <string name="search_edittext_hint">Search repositories</string>
+    <string name="title_activity_repositorium">ScrollingActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>
