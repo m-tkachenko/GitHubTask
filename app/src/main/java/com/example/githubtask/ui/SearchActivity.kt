@@ -6,13 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.githubtask.R
 import com.example.githubtask.data.GithubBuilder
 import com.example.githubtask.data.Repo
-import com.example.githubtask.data.RepoResult
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.Schedulers.io
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.user_rep_in_list.view.*
@@ -52,6 +50,8 @@ class SearchActivity : AppCompatActivity() {
 class RepoItemInList(var repo: Repo) : Item<GroupieViewHolder>() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.textview_repo_title.text = repo.name
+        viewHolder.itemView.textview_repo_stars.text = repo.stargazers_count.toString()
+        Picasso.get().load(repo.owner.avatar_url).into(viewHolder.itemView.imageview_avatar)
     }
 
     override fun getLayout(): Int {
