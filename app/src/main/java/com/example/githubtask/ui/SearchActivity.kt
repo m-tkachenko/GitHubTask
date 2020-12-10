@@ -1,11 +1,17 @@
 package com.example.githubtask.ui
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
+import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import com.example.githubtask.R
 import com.example.githubtask.data.GithubBuilder
 import com.example.githubtask.data.Repo
+import com.example.githubtask.data.RepoViewModelClass
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -17,33 +23,27 @@ import kotlinx.android.synthetic.main.user_rep_in_list.view.*
 
 class SearchActivity : AppCompatActivity() {
 
-    var repoList: List<Repo>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
         val repoAdapter = GroupAdapter<GroupieViewHolder>()
-
         recyclerview_of_reps.adapter = repoAdapter
 
-        val repos = GithubBuilder.getClient().searchRepo(query = "tuk")
+        edittext_search_repos.setOnKeyListener { view, keyCode, keyEvent ->
+            if (((keyEvent.action ?: -1) == KeyEvent.ACTION_DOWN) ||
+                    keyCode == EditorInfo.IME_ACTION_DONE) {
 
-        repos
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(io())
-            .subscribe({
-                result ->
-                Log.d("Result", "Result: ${result.items[0].owner.avatar_url} repositories")
+                val request = edittext_search_repos.text.toString()
+                val repoViewItems = RepoViewModelClass(request)
 
-                repoList = result.items
+                repoViewItems.reposShowsInRow(repoAdapter)
 
-                repoList!!.forEach {
-                    repoAdapter.add(RepoItemInList(it))
-                }
-            }, {
-                error ->
-                error.printStackTrace()
-            })
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
+        }
+
     }
 }
 
