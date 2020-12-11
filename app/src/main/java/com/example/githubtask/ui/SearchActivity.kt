@@ -1,5 +1,6 @@
 package com.example.githubtask.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -37,13 +38,31 @@ class SearchActivity : AppCompatActivity() {
                 val request = edittext_search_repos.text.toString()
                 val repoViewItems = RepoViewModelClass(request)
 
-                repoViewItems.reposShowsInRow(repoAdapter)
+                repoViewItems.reposShowsInRow()
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .observeOn(io())
+                    .subscribe({
+                        result ->
+                            runOnUiThread { repoAdapter.addAll(result) }
+                    })
 
                 return@setOnKeyListener true
             }
             return@setOnKeyListener false
         }
 
+
+        repoAdapter.setOnItemClickListener { item, view ->
+            val intent = Intent(this, RepositoriumActivity::class.java)
+            val repoItem = item as RepoItemInList
+
+            intent.putExtra("REPO_NAME", repoItem.repo.name)
+            Log.d("Result", "Repo Name in Search: ${repoItem.repo.name}")
+            intent.putExtra("REPO_AUTHOR_LOGIN", repoItem.repo.owner.login)
+            Log.d("Result", "Repo Login in Search: ${repoItem.repo.owner.login}")
+
+            startActivity(intent)
+        }
     }
 }
 

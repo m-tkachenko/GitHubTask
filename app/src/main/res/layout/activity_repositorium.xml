@@ -1,37 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".ui.RepositoriumActivity">
+    tools:context=".ui.SearchActivity"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+    <ImageView
+        android:id="@+id/img_view_for_user_photo"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
+        android:layout_height="263dp"
+        android:contentDescription="User photo"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+    <ImageView
+        android:id="@+id/imageview_back_icon"
+        android:layout_width="13dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="12dp"
+        android:src="@mipmap/back_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/img_view_for_user_photo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:contentDescription="User photo"/>
+    <ImageView
+        android:id="@+id/imageview_star_filled_icon"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="24dp"
+        android:src="@mipmap/star_icon_filled"
+        app:layout_constraintBottom_toBottomOf="@+id/img_view_for_user_photo"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+    <TextView
+        android:id="@+id/textview_repo_author_name"
+        android:layout_width="335dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="46dp"
+        android:letterSpacing="-0.01"
+        android:text="Repo Author Name"
+        android:textColor="@color/colorItsWhite"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="@+id/img_view_for_user_photo"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <include layout="@layout/content_scrolling" />
+    <TextView
+        android:id="@+id/textview_start_in_repo"
+        android:layout_width="137dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="22dp"
+        android:letterSpacing="-0.01"
+        android:text="stars"
+        android:textColor="@color/colorItsWhite"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/img_view_for_user_photo"
+        app:layout_constraintStart_toEndOf="@+id/imageview_star_filled_icon" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <TextView
+        android:id="@+id/textview_back_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="11dp"
+        android:text="Back"
+        android:letterSpacing="-0.02"
+        android:textSize="17sp"
+        android:textColor="@color/colorItsWhite"
+        app:layout_constraintStart_toEndOf="@+id/imageview_back_icon"
+        app:layout_constraintTop_toTopOf="@+id/img_view_for_user_photo" />
+
+    <TextView
+        android:id="@+id/textview_repo_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="4dp"
+        android:text="REPO BY"
+        app:layout_constraintBottom_toTopOf="@+id/textview_repo_author_name"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <TextView
+        android:id="@+id/textview_title_of_repo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="21dp"
+        android:letterSpacing="-0.02"
+        android:lineSpacingExtra="5sp"
+        android:text="Repo Title"
+        android:textColor="@color/colorDefaultBlack"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_view_for_user_photo" />
+
+    <Button
+        android:id="@+id/button_view_online"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="118dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/custom_view_online_button"
+        android:letterSpacing="-0.02"
+        android:text="VIEW ONLINE"
+        android:textColor="#007aff"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_view_for_user_photo" />
+
+    <TextView
+        android:id="@+id/textview_commits_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="39dp"
+        android:letterSpacing="0.02"
+        android:text="Commits History"
+        android:textColor="@color/colorDefaultBlack"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_title_of_repo" />
+
+    <Button
+        android:id="@+id/button_share_repo"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="343dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="33dp"
+        android:background="@drawable/custom_share_repo_button"
+        android:letterSpacing="-0.02"
+        android:text="Share Repo"
+        android:textColor="#007aff"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/button_share_repo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_commits_history" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
