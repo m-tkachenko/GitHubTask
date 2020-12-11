@@ -28,9 +28,9 @@ class CommitViewModelClass(val repoLogin : String?, val repoName : String?) {
                 Log.d("Result", "Repo Login in CommitViewModel in fun val repoLogin: $repoLogin")
 
                 Log.d("Result", "Repo Name in CommitViewModel in fun: ${commitList!![0].repository.name}")
-                Log.d("Result", "Repo Login in CommitViewModel in fun: ${result.items[2].repository.owner.login}")
+                Log.d("Result", "Repo Login in CommitViewModel in fun: ${result.items[0].repository.owner.login}")
 
-                commitSub.onNext(commitList)
+                commitSub.onNext(commitList!!.map { commit -> commit })
                        },{
                 error ->
                     error.printStackTrace()
