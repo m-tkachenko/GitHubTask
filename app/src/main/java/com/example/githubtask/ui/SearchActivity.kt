@@ -61,6 +61,8 @@ class SearchActivity : AppCompatActivity() {
             intent.putExtra("REPO_AUTHOR_LOGIN", repoItem.repo.owner.login)
             Log.d("Result", "Repo Login in Search: ${repoItem.repo.owner.login}")
 
+            intent.putExtra("REPO_FULL_NAME", repoItem.repo.full_name)
+
             startActivity(intent)
         }
     }
