@@ -1,39 +1,31 @@
 package com.example.githubtask.data
 
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import com.example.githubtask.ui.RepoItemInList
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.GroupieViewHolder
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers.io
-import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.activity_search.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class RepoViewModelClass(searchRequest: String){
 
     private var repoList: List<Repo>? = null
     private val repos = GithubBuilder.getClient().searchRepo(query = searchRequest)
 
-    fun reposShowsInRow() : PublishSubject<List<RepoItemInList>> {
+    fun reposShowsInRow(): List<Repo>? {
 
-        val subject = PublishSubject.create<List<RepoItemInList>>()
+        repos.enqueue(object: Callback<RepoResult>{
+            override fun onResponse(call: Call<RepoResult>, response: Response<RepoResult>) {
+                if (response.code() == 200) {
 
-        repos
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(io())
-            .subscribe({
-                result ->
-                    Log.d("Result", "Repo Result: ${result.items[2]}")
-                    repoList = result.items
-                    subject.onNext(repoList!!.map { RepoItemInList(it) })
-            },{
-                error ->
-                    error.printStackTrace()
-            })
+                    repoList?.map { response.body()?.items; repos }
+                }
+            }
 
-        return subject
+            override fun onFailure(call: Call<RepoResult>, t: Throwable) {
+                Log.d("ERROR", "${t.message}")
+            }
+        })
+
+        return repoList
     }
 
 }

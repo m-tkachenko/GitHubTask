@@ -2,23 +2,17 @@ package com.example.githubtask.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import com.example.githubtask.R
-import com.example.githubtask.data.GithubBuilder
 import com.example.githubtask.data.Repo
 import com.example.githubtask.data.RepoViewModelClass
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers.io
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.user_rep_in_list.view.*
 
@@ -32,19 +26,17 @@ class SearchActivity : AppCompatActivity() {
         recyclerview_of_reps.adapter = repoAdapter
 
         edittext_search_repos.setOnKeyListener { view, keyCode, keyEvent ->
-            if (((keyEvent.action ?: -1) == KeyEvent.ACTION_DOWN) ||
+            if ((keyEvent.action == KeyEvent.ACTION_DOWN) ||
                     keyCode == EditorInfo.IME_ACTION_DONE) {
 
                 val request = edittext_search_repos.text.toString()
                 val repoViewItems = RepoViewModelClass(request)
 
-                repoViewItems.reposShowsInRow()
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .observeOn(io())
-                    .subscribe({
-                        result ->
-                            runOnUiThread { repoAdapter.addAll(result) }
-                    })
+                runOnUiThread {
+                    repoViewItems.reposShowsInRow()?.forEach {
+                        repoAdapter.add(RepoItemInList(it))
+                    }
+                }
 
                 return@setOnKeyListener true
             }
@@ -57,11 +49,10 @@ class SearchActivity : AppCompatActivity() {
             val repoItem = item as RepoItemInList
 
             intent.putExtra("REPO_NAME", repoItem.repo.name)
-            Log.d("Result", "Repo Name in Search: ${repoItem.repo.name}")
             intent.putExtra("REPO_AUTHOR_LOGIN", repoItem.repo.owner.login)
-            Log.d("Result", "Repo Login in Search: ${repoItem.repo.owner.login}")
-
-            intent.putExtra("REPO_FULL_NAME", repoItem.repo.full_name)
+            intent.putExtra("REPO_AUTHOR_AVATAR", repoItem.repo.owner.avatar_url)
+            intent.putExtra("REPO_TITLE", repoItem.repo.name)
+            intent.putExtra("REPO_START", repoItem.repo.stargazers_count)
 
             startActivity(intent)
         }

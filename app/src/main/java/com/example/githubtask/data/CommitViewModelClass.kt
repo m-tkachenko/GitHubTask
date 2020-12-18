@@ -1,43 +1,31 @@
 package com.example.githubtask.data
 
 import android.util.Log
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers.io
-import io.reactivex.subjects.PublishSubject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class CommitViewModelClass(val repoLogin : String?, val repoName : String?) {
+class CommitViewModelClass(repoLogin : String?, repoName : String?) {
 
     private var commitList: List<Commit>? = null
     private val commit = GithubBuilder.getClient().searchCommit("$repoLogin", "$repoName")
 
-    fun commitsRequest(): PublishSubject<List<Commit>>? {
-        Log.d("Result", "Repo Name in CommitViewModel: $repoName")
-        Log.d("Result", "Repo Login in CommitViewModel: $repoLogin")
+    fun commitsRequest(): List<Commit>? {
 
-        val commit = GithubBuilder.getClient().searchCommit("$repoLogin", "$repoName")
+        commit.enqueue(object: Callback<CommitResult> {
+            override fun onResponse(call: Call<CommitResult>, response: Response<CommitResult>) {
+                if (response.code() == 200) {
 
-        val commitSub = PublishSubject.create<List<Commit>>()
+                    commitList?.map { response.body()?.items; commit}
+                }
+            }
 
-        commit
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(io())
-            .subscribe({
-                result ->
-                commitList = result.items.map { commit -> commit.commit }
-                Log.d("Result", "Commit Result in ViewModel: ${result.items[0]}")
+            override fun onFailure(call: Call<CommitResult>, t: Throwable) {
+                Log.d("ERROR", "${t.message}")
+            }
 
-                Log.d("Result", "Repo Name in CommitViewModel in fun val repoName: $repoName")
-                Log.d("Result", "Repo Login in CommitViewModel in fun val repoLogin: $repoLogin")
+        })
 
-                Log.d("Result", "Repo Name in CommitViewModel in fun: ${commitList!![0]}")
-                Log.d("Result", "Repo Login in CommitViewModel in fun: ${result.items[0]}")
-
-                commitSub.onNext(commitList!!.map { commit -> commit })
-                       },{
-                error ->
-                    error.printStackTrace()
-            })
-
-        return commitSub
+        return commitList
     }
 }
