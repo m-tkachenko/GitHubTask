@@ -13,6 +13,7 @@ import com.example.githubtask.R
 import com.example.githubtask.data.Commit
 import com.example.githubtask.data.CommitListInfo
 import com.example.githubtask.data.CommitViewModelClass
+import com.example.githubtask.data.commitInfo
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -39,22 +40,20 @@ class RepositoriumActivity : AppCompatActivity() {
         val commit = CommitViewModelClass(repoLogin, repoName)
 
         commit.commitsRequest {
-                list: List<CommitListInfo> ->
+                commit: commitInfo ->
 
-            textview_repo_author_name.text = list.get(0).commit.author.name
+            textview_repo_author_name.text = commit.commitAuthorName
 
-            for (i in 0..2) {
-                list.get(i).let { CommitItemInList(it, i + 1) }.let { commitAdapter.add(it) }
-            }
+            commit.commitList?.let { commitAdapter.addAll(it) }
 
             button_view_online.setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(list.get(0).commit.url))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(commit.commitUrl))
                 startActivity(intent)
             }
 
             button_share_repo.setOnClickListener {
                 val sharingText = "Name of repo: ${repoName}." +
-                        "Url adress of this repo: ${list.get(0).commit.url}"
+                        "Url adress of this repo: ${commit.commitUrl}"
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(Intent.EXTRA_TEXT, sharingText)
@@ -78,11 +77,11 @@ class RepositoriumActivity : AppCompatActivity() {
     }
 }
 
-class CommitItemInList(val commitList: CommitListInfo, val numberOfItem: Int) : Item<GroupieViewHolder>(){
+class CommitItemInList(val commitList: CommitListInfo?, val numberOfItem: Int) : Item<GroupieViewHolder>(){
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-            viewHolder.itemView.textview_commit_author_name.text = commitList.commit.committer.name
-            viewHolder.itemView.textview_author_email.text = commitList.commit.committer.email
-            viewHolder.itemView.textview_commit_message.text = commitList.commit.message
+            viewHolder.itemView.textview_commit_author_name.text = commitList?.commit?.committer?.name
+            viewHolder.itemView.textview_author_email.text = commitList?.commit?.committer?.email
+            viewHolder.itemView.textview_commit_message.text = commitList?.commit?.message
             viewHolder.itemView.textview_number.text = numberOfItem.toString()
         }
 

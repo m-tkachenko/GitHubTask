@@ -2,8 +2,6 @@ package com.example.githubtask.data
 
 data class CommitListInfo (
     val url: String,
-    val sha: String,
-    val comments_url: String,
     val commit : Commit
     )
 

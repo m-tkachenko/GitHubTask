@@ -32,9 +32,9 @@ class SearchActivity : AppCompatActivity() {
                 val request = edittext_search_repos.text.toString()
                 val repoViewItems = RepoViewModelClass(request)
 
-                runOnUiThread {
-                    repoViewItems.reposShowsInRow { list: List<Repo> ->
-                        repoAdapter.addAll(list.map { repo -> RepoItemInList(repo) } )
+                repoViewItems.reposShowsInRow { list: List<RepoItemInList> ->
+                    runOnUiThread {
+                        repoAdapter.addAll(list)
                     }
                 }
                 return@setOnKeyListener true
