@@ -33,11 +33,10 @@ class SearchActivity : AppCompatActivity() {
                 val repoViewItems = RepoViewModelClass(request)
 
                 runOnUiThread {
-                    repoViewItems.reposShowsInRow()?.forEach {
-                        repoAdapter.add(RepoItemInList(it))
+                    repoViewItems.reposShowsInRow { list: List<Repo> ->
+                        repoAdapter.addAll(list.map { repo -> RepoItemInList(repo) } )
                     }
                 }
-
                 return@setOnKeyListener true
             }
             return@setOnKeyListener false
@@ -52,7 +51,7 @@ class SearchActivity : AppCompatActivity() {
             intent.putExtra("REPO_AUTHOR_LOGIN", repoItem.repo.owner.login)
             intent.putExtra("REPO_AUTHOR_AVATAR", repoItem.repo.owner.avatar_url)
             intent.putExtra("REPO_TITLE", repoItem.repo.name)
-            intent.putExtra("REPO_START", repoItem.repo.stargazers_count)
+            intent.putExtra("REPO_STARS", repoItem.repo.stargazers_count.toString())
 
             startActivity(intent)
         }

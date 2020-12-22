@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubtask.R
 import com.example.githubtask.data.Commit
+import com.example.githubtask.data.CommitListInfo
 import com.example.githubtask.data.CommitViewModelClass
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
@@ -35,40 +36,41 @@ class RepositoriumActivity : AppCompatActivity() {
         val repoTitle = intent.getStringExtra("REPO_TITLE")
         val repoStars = intent.getStringExtra("REPO_STARS")
 
-        val commit = CommitViewModelClass(repoLogin, repoName).commitsRequest()
+        val commit = CommitViewModelClass(repoLogin, repoName)
 
-        textview_repo_author_name.text = commit?.get(0)!!.author.name
+        commit.commitsRequest {
+                list: List<CommitListInfo> ->
+
+            textview_repo_author_name.text = list.get(0).commit.author.name
+
+            for (i in 0..2) {
+                list.get(i).let { CommitItemInList(it, i + 1) }.let { commitAdapter.add(it) }
+            }
+
+            button_view_online.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(list.get(0).commit.url))
+                startActivity(intent)
+            }
+
+            button_share_repo.setOnClickListener {
+                val sharingText = "Name of repo: ${repoName}." +
+                        "Url adress of this repo: ${list.get(0).commit.url}"
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, sharingText)
+                    type = "text/plain"
+                }
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(shareIntent)
+            }
+        }
 
         runOnUiThread {
-            Picasso.get().load(repoAuthorAvatar)
-                .into(img_view_for_user_photo)
-
+            Picasso.get().load(repoAuthorAvatar).into(img_view_for_user_photo)
             textview_title_of_repo.text = repoTitle
-
-            for (i in 1..3) {
-                commitAdapter.add(CommitItemInList(commit[i], i))
-            }
         }
 
-        val stars = repoStars
-        textview_start_in_repo.text = "Number of Stars ($stars)"
-
-        button_view_online.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(commit.get(0).html_url))
-            startActivity(intent)
-        }
-
-        button_share_repo.setOnClickListener {
-            val sharingText = "Name of repo: ${repoName}." +
-                    "Url adress of this repo: ${commit.get(0).html_url}"
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, sharingText)
-                type = "text/plain"
-            }
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            startActivity(shareIntent)
-        }
+        textview_start_in_repo.text = "Number of Stars ($repoStars)"
 
         textview_back_icon.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
@@ -76,11 +78,11 @@ class RepositoriumActivity : AppCompatActivity() {
     }
 }
 
-    class CommitItemInList(val commit: Commit, val numberOfItem: Int) : Item<GroupieViewHolder>(){
+class CommitItemInList(val commitList: CommitListInfo, val numberOfItem: Int) : Item<GroupieViewHolder>(){
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-            viewHolder.itemView.textview_commit_author_name.text = commit.committer.name
-            viewHolder.itemView.textview_author_email.text = commit.committer.email
-            viewHolder.itemView.textview_commit_message.text = commit.message
+            viewHolder.itemView.textview_commit_author_name.text = commitList.commit.committer.name
+            viewHolder.itemView.textview_author_email.text = commitList.commit.committer.email
+            viewHolder.itemView.textview_commit_message.text = commitList.commit.message
             viewHolder.itemView.textview_number.text = numberOfItem.toString()
         }
 

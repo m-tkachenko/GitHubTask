@@ -4,6 +4,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.Call
+import retrofit2.Callback
 
 interface GithubService {
     @GET("search/repositories")
@@ -11,5 +12,5 @@ interface GithubService {
 
     @GET("/repos/{owner}/{repo}/commits")
     fun searchCommit (@Path("owner") owner: String,
-                      @Path("repo") repo: String) : Call<CommitResult>
+                      @Path("repo") repo: String) : Call<List<CommitListInfo>>
 }

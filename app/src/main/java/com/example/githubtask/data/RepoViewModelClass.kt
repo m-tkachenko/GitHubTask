@@ -10,13 +10,13 @@ class RepoViewModelClass(searchRequest: String){
     private var repoList: List<Repo>? = null
     private val repos = GithubBuilder.getClient().searchRepo(query = searchRequest)
 
-    fun reposShowsInRow(): List<Repo>? {
+    fun reposShowsInRow( callBack: (List<Repo>) -> Unit ) {
 
-        repos.enqueue(object: Callback<RepoResult>{
+        repos.enqueue(object : Callback<RepoResult> {
             override fun onResponse(call: Call<RepoResult>, response: Response<RepoResult>) {
                 if (response.code() == 200) {
-
-                    repoList?.map { response.body()?.items; repos }
+                    repoList = response.body()?.items
+                    repoList?.let { callBack(it) }
                 }
             }
 
@@ -24,8 +24,5 @@ class RepoViewModelClass(searchRequest: String){
                 Log.d("ERROR", "${t.message}")
             }
         })
-
-        return repoList
     }
-
 }
